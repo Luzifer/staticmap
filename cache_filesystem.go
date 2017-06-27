@@ -26,15 +26,15 @@ func filesystemCache(center s2.LatLng, zoom int, marker []marker, x, y int) (io.
 	}
 
 	buf := new(bytes.Buffer)
-	if _, err := io.Copy(buf, mapReader); err != nil {
+	if _, err = io.Copy(buf, mapReader); err != nil {
 		return nil, err
 	}
 
-	if err := os.MkdirAll(path.Dir(cacheFileName), 0755); err != nil {
+	if err = os.MkdirAll(path.Dir(cacheFileName), 0700); err != nil {
 		return nil, err
 	}
 
-	if err := ioutil.WriteFile(cacheFileName, buf.Bytes(), 0644); err != nil {
+	if err = ioutil.WriteFile(cacheFileName, buf.Bytes(), 0644); err != nil {
 		return nil, err
 	}
 

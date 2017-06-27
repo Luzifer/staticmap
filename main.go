@@ -91,7 +91,7 @@ func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 	}
 
 	if mapReader, err = cacheFunc(*center, zoom, markers, x, y); err != nil {
-		log.Error("Map render failed: %s (Request: %s)", err, r.URL.String())
+		log.Errorf("Map render failed: %s (Request: %s)", err, r.URL.String())
 		http.Error(res, fmt.Sprintf("I experienced difficulties rendering your map: %s", err), http.StatusInternalServerError)
 		return
 	}
