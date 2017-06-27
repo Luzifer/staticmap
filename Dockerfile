@@ -2,7 +2,8 @@ FROM golang:alpine
 
 LABEL maintainer "Knut Ahlers <knut@ahlers.me>"
 
-ENV CACHE_DIR /data
+ENV CACHE_DIR /data/map-cache
+ENV XDG_CACHE_HOME /data/tile-cache
 
 ADD . /go/src/github.com/Luzifer/staticmap
 WORKDIR /go/src/github.com/Luzifer/staticmap
