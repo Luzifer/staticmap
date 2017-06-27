@@ -28,6 +28,22 @@
 			"Rev": "6573e894f8e294cbae0c4e45c25ff9f2e2918a4e"
 		},
 		{
+			"ImportPath": "github.com/didip/tollbooth",
+			"Rev": "e11ced12e0e0bbfedbc1783fcf0a5ec7f9dc4856"
+		},
+		{
+			"ImportPath": "github.com/didip/tollbooth/config",
+			"Rev": "e11ced12e0e0bbfedbc1783fcf0a5ec7f9dc4856"
+		},
+		{
+			"ImportPath": "github.com/didip/tollbooth/errors",
+			"Rev": "e11ced12e0e0bbfedbc1783fcf0a5ec7f9dc4856"
+		},
+		{
+			"ImportPath": "github.com/didip/tollbooth/libstring",
+			"Rev": "e11ced12e0e0bbfedbc1783fcf0a5ec7f9dc4856"
+		},
+		{
 			"ImportPath": "github.com/flopp/go-coordsparser",
 			"Rev": "845bca739e263e1cd38de25024a47b4d6acbfc1f"
 		},
@@ -83,6 +99,11 @@
 			"Rev": "c900de9dbbc73129068f5af6a823068fc5f2308c"
 		},
 		{
+			"ImportPath": "github.com/patrickmn/go-cache",
+			"Comment": "v2.0.0-9-g7ac1518",
+			"Rev": "7ac151875ffb48b9f3ccce9ea20f020b0c1596c8"
+		},
+		{
 			"ImportPath": "github.com/spf13/pflag",
 			"Rev": "c7e63cf4530bcd3ba943729cee0efeff2ebea63f"
 		},
@@ -111,8 +132,16 @@
 			"Rev": "97680175a5267bb8b31f1923e7a66df98013b11a"
 		},
 		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "dfe83d419c9403b40b19d08cdba2afec27b002f7"
+		},
+		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9"
+		},
+		{
+			"ImportPath": "golang.org/x/time/rate",
+			"Rev": "8be79e1e0910c292df4e79c241bb7e8f7e725959"
 		},
 		{
 			"ImportPath": "gopkg.in/validator.v2",

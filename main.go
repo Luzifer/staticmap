@@ -12,6 +12,7 @@ import (
 	httpHelper "github.com/Luzifer/go_helpers/http"
 	"github.com/Luzifer/rconfig"
 	log "github.com/Sirupsen/logrus"
+	"github.com/didip/tollbooth"
 	"github.com/golang/geo/s2"
 	"github.com/gorilla/mux"
 	colorful "github.com/lucasb-eyer/go-colorful"
@@ -23,6 +24,8 @@ var (
 		ForceCache     time.Duration `flag:"force-cache" default:"24h" description:"Force map to be cached for this duration"`
 		Listen         string        `flag:"listen" default:":3000" description:"IP/Port to listen on"`
 		MaxSize        string        `flag:"max-size" default:"1024x1024" description:"Maximum map size requestable"`
+		RateLimit      int64         `flag:"rate-limit" default:"1" description:"How many requests to allow per time"`
+		RateLimitTime  time.Duration `flag:"rate-limit-time" default:"1s" description:"Time interval to allow N requests in"`
 		VersionAndExit bool          `flag:"version" default:"false" description:"Print version information and exit"`
 	}
 
@@ -48,9 +51,12 @@ func init() {
 }
 
 func main() {
+	rateLimit := tollbooth.NewLimiter(cfg.RateLimit, cfg.RateLimitTime)
+	rateLimit.IPLookups = []string{"X-Forwarded-For", "RemoteAddr", "X-Real-IP"}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/status", func(res http.ResponseWriter, r *http.Request) { http.Error(res, "I'm fine", http.StatusOK) })
-	r.HandleFunc("/map.png", handleMapRequest)
+	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handleMapRequest))
 	log.Fatalf("HTTP Server exitted: %s", http.ListenAndServe(cfg.Listen, httpHelper.NewHTTPLogHandler(r)))
 }
 
