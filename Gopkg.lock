@@ -2,13 +2,20 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/Luzifer/go-staticmaps"
+  packages = ["."]
+  revision = "5f69ec7945b506b1d33edd717e84e479818e2365"
+
+[[projects]]
   name = "github.com/Luzifer/go_helpers"
   packages = [
     "accessLogger",
-    "http"
+    "http",
+    "str"
   ]
-  revision = "e31c3a2659d3f4901f696692cfe98bd0eb5168f9"
-  version = "v2.2.0"
+  revision = "8fdddb7041fe962e750caa553a0714f94e261c4a"
+  version = "v2.3.1"
 
 [[projects]]
   name = "github.com/Luzifer/rconfig"
@@ -19,7 +26,8 @@
 [[projects]]
   name = "github.com/Sirupsen/logrus"
   packages = ["."]
-  revision = "3ec0642a7fb6488f65b06f9040adc67e3990296a"
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
 
 [[projects]]
   branch = "master"
@@ -31,11 +39,12 @@
   name = "github.com/didip/tollbooth"
   packages = [
     ".",
-    "config",
     "errors",
-    "libstring"
+    "libstring",
+    "limiter"
   ]
-  revision = "e11ced12e0e0bbfedbc1783fcf0a5ec7f9dc4856"
+  revision = "c95eaa3ddc98f635a91e218b48727fb2e06613ea"
+  version = "v4.0.0"
 
 [[projects]]
   branch = "master"
@@ -44,24 +53,22 @@
   revision = "845bca739e263e1cd38de25024a47b4d6acbfc1f"
 
 [[projects]]
-  name = "github.com/flopp/go-staticmaps"
-  packages = ["."]
-  revision = "e8779c98399f6efad291d6504990daceeb9940a9"
-
-[[projects]]
   name = "github.com/fogleman/gg"
   packages = ["."]
-  revision = "ee8994ff90057955c428a5a949da5d064bf3ce6b"
+  revision = "6166aa3c1afaee416f384645a81636267aee6d25"
+  version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/golang/freetype"
   packages = [
     "raster",
     "truetype"
   ]
-  revision = "38b4c392adc5eed94207994c4848fff99f4ac234"
+  revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
 
 [[projects]]
+  branch = "master"
   name = "github.com/golang/geo"
   packages = [
     "r1",
@@ -70,22 +77,25 @@
     "s1",
     "s2"
   ]
-  revision = "f65fe014169924880aa2c95d7707c2da435534b9"
+  revision = "fb250ae94fbe10f86b4f1a9b70a19925da3410b9"
 
 [[projects]]
   name = "github.com/gorilla/context"
   packages = ["."]
-  revision = "1c83b3eabd45b6d76072b66b746c20815fb2872d"
+  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
+  version = "v1.1"
 
 [[projects]]
   name = "github.com/gorilla/mux"
   packages = ["."]
-  revision = "49c024275504f0341e5a9971eb7ba7fa3dc7af40"
+  revision = "53c1911da2b537f792e7cafcb446b05ffe33b996"
+  version = "v1.6.1"
 
 [[projects]]
+  branch = "master"
   name = "github.com/lucasb-eyer/go-colorful"
   packages = ["."]
-  revision = "c900de9dbbc73129068f5af6a823068fc5f2308c"
+  revision = "231272389856c976b7500c4fffcc52ddf06ff4eb"
 
 [[projects]]
   name = "github.com/patrickmn/go-cache"
@@ -95,7 +105,8 @@
 [[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "c7e63cf4530bcd3ba943729cee0efeff2ebea63f"
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -104,45 +115,57 @@
   revision = "7848cf26f5a58b4a4e23b89a4b67cfc3d52dd042"
 
 [[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "b2aa35443fbc700ab74c586ae79b81c171851023"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/image"
   packages = [
-    "draw",
     "font",
     "font/basicfont",
     "font/plan9font",
-    "math/f64",
     "math/fixed"
   ]
-  revision = "97680175a5267bb8b31f1923e7a66df98013b11a"
+  revision = "f315e440302883054d0c2bd85486878cb4f8572c"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "dfe83d419c9403b40b19d08cdba2afec27b002f7"
+  revision = "b68f30494add4df6bd8ef5e82803f308e7f7c59c"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
-  revision = "8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
 
 [[projects]]
   name = "golang.org/x/time"
   packages = ["rate"]
-  revision = "8be79e1e0910c292df4e79c241bb7e8f7e725959"
+  revision = "711ca1cb87636abec28122ef3bc6a77269d433f3"
 
 [[projects]]
+  branch = "v2"
   name = "gopkg.in/validator.v2"
   packages = ["."]
-  revision = "07ffaad256c8e957050ad83d6472eb97d785013d"
+  revision = "59c90c7046f643cbe0d4e7c8776c42a84ce75910"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "31c299268d302dd0aa9a0dcf765a3d58971ac83f"
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3d56f50ffce992752c5b104c169174827eb4cb480ed07f718d3ce4f84bd1244e"
+  inputs-digest = "7c8497a8311887c02aced01ebdf91a73dc82b48920f8f9ebd5ad643204043ce2"
   solver-name = "gps-cdcl"
   solver-version = 1

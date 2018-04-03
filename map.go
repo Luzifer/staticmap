@@ -6,7 +6,7 @@ import (
 	"image/color"
 	"io"
 
-	staticMap "github.com/flopp/go-staticmaps"
+	staticMap "github.com/Luzifer/go-staticmaps"
 	"github.com/fogleman/gg"
 	"github.com/golang/geo/s2"
 )
@@ -45,6 +45,8 @@ func (m marker) String() string {
 
 func generateMap(center s2.LatLng, zoom int, marker []marker, x, y int) (io.Reader, error) {
 	ctx := staticMap.NewContext()
+	ctx.SetUserAgent(fmt.Sprintf("Mozilla/5.0+(compatible; staticmap/%s; https://github.com/Luzifer/staticmap)", version))
+
 	ctx.SetSize(x, y)
 	ctx.SetCenter(center)
 	ctx.SetZoom(zoom)
@@ -54,8 +56,6 @@ func generateMap(center s2.LatLng, zoom int, marker []marker, x, y int) (io.Read
 			ctx.AddMarker(staticMap.NewMarker(m.pos, m.color, float64(m.size)))
 		}
 	}
-
-	staticMap.TileFetcherUserAgent = fmt.Sprintf("Mozilla/5.0+(compatible; staticmap/%s; https://github.com/Luzifer/staticmap)", version)
 
 	img, err := ctx.Render()
 	if err != nil {

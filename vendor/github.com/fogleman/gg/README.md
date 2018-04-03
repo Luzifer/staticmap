@@ -6,13 +6,9 @@
 
 ## Installation
 
-    go get -u github.com/fogleman/gg
+    go get github.com/fogleman/gg
 
-Alternatively, you may use gopkg.in to grab a specific major-version:
-
-    go get -u gopkg.in/fogleman/gg.v1
-
-## Documentation
+## GoDoc
 
 https://godoc.org/github.com/fogleman/gg
 
@@ -155,6 +151,8 @@ It is often desired to rotate or scale about a point that is not the origin. The
 
 `InvertY` is provided in case Y should increase from bottom to top vs. the default top to bottom.
 
+Note: transforms do not currently affect `DrawImage` or `DrawString`.
+
 ## Stack Functions
 
 Save and restore the state of the context. These can be nested.
@@ -188,6 +186,12 @@ SavePNG(path string, im image.Image) error
 ```
 
 ![Separator](http://i.imgur.com/fsUvnPB.png)
+
+## How Do it Do?
+
+`gg` is mostly a wrapper around `github.com/golang/freetype/raster`. The goal
+is to provide some more functionality and a nicer API that will suffice for
+most use cases.
 
 ## Another Example
 
