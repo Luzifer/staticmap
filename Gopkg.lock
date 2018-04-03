@@ -14,8 +14,8 @@
     "http",
     "str"
   ]
-  revision = "8fdddb7041fe962e750caa553a0714f94e261c4a"
-  version = "v2.3.1"
+  revision = "15199b8e33ca5558e8c58af7924083983eb63ca4"
+  version = "v2.4.0"
 
 [[projects]]
   name = "github.com/Luzifer/rconfig"
@@ -100,7 +100,8 @@
 [[projects]]
   name = "github.com/patrickmn/go-cache"
   packages = ["."]
-  revision = "7ac151875ffb48b9f3ccce9ea20f020b0c1596c8"
+  revision = "a3647f8e31d79543b2d0f0ae2fe5c379d72cedc0"
+  version = "v2.1.0"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -147,9 +148,10 @@
   revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/time"
   packages = ["rate"]
-  revision = "711ca1cb87636abec28122ef3bc6a77269d433f3"
+  revision = "26559e0f760e39c24d730d3224364aef164ee23f"
 
 [[projects]]
   branch = "v2"
