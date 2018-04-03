@@ -1,3 +1,7 @@
+# 0.3.0 / 2018-04-03
+
+  * Allow disabling of attribution rendering
+
 # 0.2.0 / 2018-04-03
 
   * Migrate vendoring to dep
