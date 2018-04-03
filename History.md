@@ -1,3 +1,8 @@
+# 0.2.0 / 2018-04-03
+
+  * Migrate vendoring to dep
+  * Allow configuration through ENV
+
 # 0.1.1 / 2017-06-28
 
   * Fix some linter advices
