@@ -21,11 +21,11 @@ import (
 var (
 	cfg struct {
 		CacheDir       string        `flag:"cache-dir" default:"cache" env:"CACHE_DIR" description:"Directory to save the cached images to"`
-		ForceCache     time.Duration `flag:"force-cache" default:"24h" description:"Force map to be cached for this duration"`
+		ForceCache     time.Duration `flag:"force-cache" default:"24h" env:"FORCE_CACHE" description:"Force map to be cached for this duration"`
 		Listen         string        `flag:"listen" default:":3000" description:"IP/Port to listen on"`
-		MaxSize        string        `flag:"max-size" default:"1024x1024" description:"Maximum map size requestable"`
-		RateLimit      int64         `flag:"rate-limit" default:"1" description:"How many requests to allow per time"`
-		RateLimitTime  time.Duration `flag:"rate-limit-time" default:"1s" description:"Time interval to allow N requests in"`
+		MaxSize        string        `flag:"max-size" default:"1024x1024" env:"MAX_SIZE" description:"Maximum map size requestable"`
+		RateLimit      int64         `flag:"rate-limit" default:"1" env:"RATE_LIMIT" description:"How many requests to allow per time"`
+		RateLimitTime  time.Duration `flag:"rate-limit-time" default:"1s" env:"RATE_LIMIT_TIME" description:"Time interval to allow N requests in"`
 		VersionAndExit bool          `flag:"version" default:"false" description:"Print version information and exit"`
 	}
 
@@ -37,7 +37,7 @@ var (
 
 func init() {
 	var err error
-	if err = rconfig.Parse(&cfg); err != nil {
+	if err = rconfig.ParseAndValidate(&cfg); err != nil {
 		log.Fatalf("Unable to parse CLI parameters")
 	}
 
