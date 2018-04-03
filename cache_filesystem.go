@@ -11,8 +11,8 @@ import (
 	"github.com/golang/geo/s2"
 )
 
-func filesystemCache(center s2.LatLng, zoom int, marker []marker, x, y int) (io.ReadCloser, error) {
-	cacheKey := cacheKeyHelper(center, zoom, marker, x, y)
+func filesystemCache(center s2.LatLng, zoom int, marker []marker, x, y int, disableAttribution bool) (io.ReadCloser, error) {
+	cacheKey := cacheKeyHelper(center, zoom, marker, x, y, disableAttribution)
 	cacheFileName := path.Join(cfg.CacheDir, cacheKey[0:2], cacheKey+".png")
 
 	if info, err := os.Stat(cacheFileName); err == nil && info.ModTime().Add(cfg.ForceCache).After(time.Now()) {
@@ -20,7 +20,7 @@ func filesystemCache(center s2.LatLng, zoom int, marker []marker, x, y int) (io.
 	}
 
 	// No cache hit, generate a new map
-	mapReader, err := generateMap(center, zoom, marker, x, y)
+	mapReader, err := generateMap(center, zoom, marker, x, y, disableAttribution)
 	if err != nil {
 		return nil, err
 	}

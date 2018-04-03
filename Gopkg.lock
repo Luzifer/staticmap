@@ -2,10 +2,10 @@
 
 
 [[projects]]
-  branch = "master"
+  branch = "allow-disable-of-attribution-rendering"
   name = "github.com/Luzifer/go-staticmaps"
   packages = ["."]
-  revision = "5f69ec7945b506b1d33edd717e84e479818e2365"
+  revision = "d701c2c232ad9cbcac3e48e2c34e98544191c2fe"
 
 [[projects]]
   name = "github.com/Luzifer/go_helpers"
@@ -166,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7c8497a8311887c02aced01ebdf91a73dc82b48920f8f9ebd5ad643204043ce2"
+  inputs-digest = "bc8b02eb09921c3dcef7328c41ec92c8442d151672053769293e0c476f4a2188"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -65,12 +65,13 @@ func main() {
 
 func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 	var (
-		center    *s2.LatLng
-		err       error
-		mapReader io.ReadCloser
-		markers   []marker
-		x, y      int
-		zoom      int
+		center             *s2.LatLng
+		disableAttribution bool = r.URL.Query().Get("no-attribution") == "true"
+		err                error
+		mapReader          io.ReadCloser
+		markers            []marker
+		x, y               int
+		zoom               int
 	)
 
 	if center, err = parseCoordinate(r.URL.Query().Get("center")); err != nil {
@@ -93,7 +94,7 @@ func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if mapReader, err = cacheFunc(*center, zoom, markers, x, y); err != nil {
+	if mapReader, err = cacheFunc(*center, zoom, markers, x, y, disableAttribution); err != nil {
 		log.Errorf("Map render failed: %s (Request: %s)", err, r.URL.String())
 		http.Error(res, fmt.Sprintf("I experienced difficulties rendering your map: %s", err), http.StatusInternalServerError)
 		return

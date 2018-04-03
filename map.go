@@ -43,13 +43,17 @@ func (m marker) String() string {
 	return fmt.Sprintf("%s|%.0f|%d,%d,%d,%d", m.pos.String(), m.size, r, g, b, a)
 }
 
-func generateMap(center s2.LatLng, zoom int, marker []marker, x, y int) (io.Reader, error) {
+func generateMap(center s2.LatLng, zoom int, marker []marker, x, y int, disableAttribution bool) (io.Reader, error) {
 	ctx := staticMap.NewContext()
 	ctx.SetUserAgent(fmt.Sprintf("Mozilla/5.0+(compatible; staticmap/%s; https://github.com/Luzifer/staticmap)", version))
 
 	ctx.SetSize(x, y)
 	ctx.SetCenter(center)
 	ctx.SetZoom(zoom)
+
+	if disableAttribution {
+		ctx.ForceNoAttribution()
+	}
 
 	if marker != nil {
 		for _, m := range marker {
