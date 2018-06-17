@@ -11,12 +11,12 @@ import (
 
 	httpHelper "github.com/Luzifer/go_helpers/http"
 	"github.com/Luzifer/rconfig"
-	log "github.com/Sirupsen/logrus"
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth/limiter"
 	"github.com/golang/geo/s2"
 	"github.com/gorilla/mux"
 	colorful "github.com/lucasb-eyer/go-colorful"
+	log "github.com/sirupsen/logrus"
 )
 
 var (

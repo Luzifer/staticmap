@@ -52,7 +52,7 @@ func generateMap(center s2.LatLng, zoom int, marker []marker, x, y int, disableA
 	ctx.SetZoom(zoom)
 
 	if disableAttribution {
-		ctx.ForceNoAttribution()
+		ctx.OverrideAttribution("")
 	}
 
 	if marker != nil {
