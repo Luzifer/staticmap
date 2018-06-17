@@ -52,6 +52,7 @@ type generateMapConfig struct {
 	Width              int
 	Height             int
 	DisableAttribution bool
+	Overlays           []*staticMap.TileProvider
 }
 
 func (g generateMapConfig) getCacheKey() string {
@@ -59,13 +60,22 @@ func (g generateMapConfig) getCacheKey() string {
 	for _, m := range g.Markers {
 		markerString = append(markerString, m.String())
 	}
-	hashString := fmt.Sprintf("%s|%d|%s|%dx%d|%v",
+
+	overlayString := []string{}
+	for _, o := range g.Overlays {
+		overlayString = append(overlayString, o.URLPattern)
+	}
+
+	hashString := fmt.Sprintf("%s:::%s|%d|%s|%dx%d|%v|%s",
+		version,
 		g.Center.String(),
 		g.Zoom,
 		strings.Join(markerString, "+"),
 		g.Width,
 		g.Height,
-		g.DisableAttribution)
+		g.DisableAttribution,
+		fmt.Sprintf("%x", sha256.Sum256([]byte(strings.Join(overlayString, "::")))),
+	)
 
 	return fmt.Sprintf("%x", sha256.Sum256([]byte(hashString)))
 }
@@ -85,6 +95,12 @@ func generateMap(opts generateMapConfig) (io.Reader, error) {
 	if opts.Markers != nil {
 		for _, m := range opts.Markers {
 			ctx.AddMarker(staticMap.NewMarker(m.pos, m.color, float64(m.size)))
+		}
+	}
+
+	if opts.Overlays != nil {
+		for _, o := range opts.Overlays {
+			ctx.AddOverlay(o)
 		}
 	}
 
