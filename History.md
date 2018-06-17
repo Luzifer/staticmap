@@ -1,3 +1,8 @@
+# 0.4.0 / 2018-06-17
+
+  * Add support for overlay map generation with post request
+  * Internal: Move parameters into struct form
+
 # 0.3.2 / 2018-06-17
 
   * Update vendored libraries
