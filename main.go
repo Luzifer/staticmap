@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -59,7 +60,8 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/status", func(res http.ResponseWriter, r *http.Request) { http.Error(res, "I'm fine", http.StatusOK) })
-	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handleMapRequest))
+	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handleMapRequest)).Methods("GET")
+	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handlePostMapRequest)).Methods("POST")
 	log.Fatalf("HTTP Server exitted: %s", http.ListenAndServe(cfg.Listen, httpHelper.NewHTTPLogHandler(r)))
 }
 
@@ -89,6 +91,35 @@ func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 
 	if opts.Markers, err = parseMarkerLocations(r.URL.Query()["markers"]); err != nil {
 		http.Error(res, fmt.Sprintf("Unable to parse 'markers' parameter: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	if mapReader, err = cacheFunc(opts); err != nil {
+		log.Errorf("Map render failed: %s (Request: %s)", err, r.URL.String())
+		http.Error(res, fmt.Sprintf("I experienced difficulties rendering your map: %s", err), http.StatusInternalServerError)
+		return
+	}
+	defer mapReader.Close()
+
+	res.Header().Set("Content-Type", "image/png")
+	res.Header().Set("Cache-Control", "public")
+	io.Copy(res, mapReader)
+}
+
+func handlePostMapRequest(res http.ResponseWriter, r *http.Request) {
+	var (
+		body      = postMapEnvelope{}
+		mapReader io.ReadCloser
+	)
+
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(res, fmt.Sprintf("Unable to parse input: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	opts, err := body.toGenerateMapConfig()
+	if err != nil {
+		http.Error(res, fmt.Sprintf("Unable to process input: %s", err), http.StatusBadRequest)
 		return
 	}
 

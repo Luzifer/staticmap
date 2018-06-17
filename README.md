@@ -33,6 +33,14 @@ The map center is set to a coordinate within Hamburg, Germany with a zoom level 
 
 ![](example/map.png)
 
+### Overlay support
+
+Starting with version `v0.4.0` the generator supports map overlays for tiles based on transparent background (like [OpenFireMap](http://openfiremap.org/), [OpenSeaMap](http://www.openseamap.org/), ...). As those requests would be too complex for `GET` requests and are also not a common usecase they are implemented as `POST` requests containing a JSON object.
+
+This example is generated with [OpenFireMap](http://openfiremap.org/) overlay tiles using the [`example/postmap.json`](example/postmap.json) file:
+
+![](example/postmap.png)
+
 ## Setup
 
 - There is a Docker container available: [`luzifer/staticmap`](https://hub.docker.com/r/luzifer/staticmap/)

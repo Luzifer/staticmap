@@ -1,0 +1,28 @@
+{
+  "center": {
+    "lat": 53.5438,
+    "lon": 9.9768
+  },
+  "height": 500,
+  "markers": [
+    {
+      "color": "blue",
+      "coord": {
+        "lat": 53.54129165,
+        "lon": 9.98420576699353
+      }
+    },
+    {
+      "color": "yellow",
+      "coord": {
+        "lat": 53.54565525,
+        "lon": 9.9680555636958
+      }
+    }
+  ],
+  "overlays": [
+    "http://openfiremap.org/hytiles/{0}/{1}/{2}.png"
+  ],
+  "width": 800,
+  "zoom": 15
+}
