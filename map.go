@@ -2,9 +2,11 @@ package main
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"fmt"
 	"image/color"
 	"io"
+	"strings"
 
 	staticMap "github.com/Luzifer/go-staticmaps"
 	"github.com/fogleman/gg"
@@ -43,20 +45,45 @@ func (m marker) String() string {
 	return fmt.Sprintf("%s|%.0f|%d,%d,%d,%d", m.pos.String(), m.size, r, g, b, a)
 }
 
-func generateMap(center s2.LatLng, zoom int, marker []marker, x, y int, disableAttribution bool) (io.Reader, error) {
+type generateMapConfig struct {
+	Center             s2.LatLng
+	Zoom               int
+	Markers            []marker
+	Width              int
+	Height             int
+	DisableAttribution bool
+}
+
+func (g generateMapConfig) getCacheKey() string {
+	markerString := []string{}
+	for _, m := range g.Markers {
+		markerString = append(markerString, m.String())
+	}
+	hashString := fmt.Sprintf("%s|%d|%s|%dx%d|%v",
+		g.Center.String(),
+		g.Zoom,
+		strings.Join(markerString, "+"),
+		g.Width,
+		g.Height,
+		g.DisableAttribution)
+
+	return fmt.Sprintf("%x", sha256.Sum256([]byte(hashString)))
+}
+
+func generateMap(opts generateMapConfig) (io.Reader, error) {
 	ctx := staticMap.NewContext()
 	ctx.SetUserAgent(fmt.Sprintf("Mozilla/5.0+(compatible; staticmap/%s; https://github.com/Luzifer/staticmap)", version))
 
-	ctx.SetSize(x, y)
-	ctx.SetCenter(center)
-	ctx.SetZoom(zoom)
+	ctx.SetSize(opts.Width, opts.Height)
+	ctx.SetCenter(opts.Center)
+	ctx.SetZoom(opts.Zoom)
 
-	if disableAttribution {
+	if opts.DisableAttribution {
 		ctx.OverrideAttribution("")
 	}
 
-	if marker != nil {
-		for _, m := range marker {
+	if opts.Markers != nil {
+		for _, m := range opts.Markers {
 			ctx.AddMarker(staticMap.NewMarker(m.pos, m.color, float64(m.size)))
 		}
 	}

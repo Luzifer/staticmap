@@ -65,36 +65,34 @@ func main() {
 
 func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 	var (
-		center             *s2.LatLng
-		disableAttribution bool = r.URL.Query().Get("no-attribution") == "true"
-		err                error
-		mapReader          io.ReadCloser
-		markers            []marker
-		x, y               int
-		zoom               int
+		err       error
+		mapReader io.ReadCloser
+		opts      = generateMapConfig{
+			DisableAttribution: r.URL.Query().Get("no-attribution") == "true",
+		}
 	)
 
-	if center, err = parseCoordinate(r.URL.Query().Get("center")); err != nil {
+	if opts.Center, err = parseCoordinate(r.URL.Query().Get("center")); err != nil {
 		http.Error(res, fmt.Sprintf("Unable to parse 'center' parameter: %s", err), http.StatusBadRequest)
 		return
 	}
 
-	if zoom, err = strconv.Atoi(r.URL.Query().Get("zoom")); err != nil {
+	if opts.Zoom, err = strconv.Atoi(r.URL.Query().Get("zoom")); err != nil {
 		http.Error(res, fmt.Sprintf("Unable to parse 'zoom' parameter: %s", err), http.StatusBadRequest)
 		return
 	}
 
-	if x, y, err = parseSize(r.URL.Query().Get("size"), true); err != nil {
+	if opts.Width, opts.Height, err = parseSize(r.URL.Query().Get("size"), true); err != nil {
 		http.Error(res, fmt.Sprintf("Unable to parse 'size' parameter: %s", err), http.StatusBadRequest)
 		return
 	}
 
-	if markers, err = parseMarkerLocations(r.URL.Query()["markers"]); err != nil {
+	if opts.Markers, err = parseMarkerLocations(r.URL.Query()["markers"]); err != nil {
 		http.Error(res, fmt.Sprintf("Unable to parse 'markers' parameter: %s", err), http.StatusBadRequest)
 		return
 	}
 
-	if mapReader, err = cacheFunc(*center, zoom, markers, x, y, disableAttribution); err != nil {
+	if mapReader, err = cacheFunc(opts); err != nil {
 		log.Errorf("Map render failed: %s (Request: %s)", err, r.URL.String())
 		http.Error(res, fmt.Sprintf("I experienced difficulties rendering your map: %s", err), http.StatusInternalServerError)
 		return
@@ -106,14 +104,14 @@ func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 	io.Copy(res, mapReader)
 }
 
-func parseCoordinate(coord string) (*s2.LatLng, error) {
+func parseCoordinate(coord string) (s2.LatLng, error) {
 	if coord == "" {
-		return nil, errors.New("No coordinate given")
+		return s2.LatLng{}, errors.New("No coordinate given")
 	}
 
 	parts := strings.Split(coord, ",")
 	if len(parts) != 2 {
-		return nil, errors.New("Coordinate not in format lat,lon")
+		return s2.LatLng{}, errors.New("Coordinate not in format lat,lon")
 	}
 
 	var (
@@ -122,15 +120,15 @@ func parseCoordinate(coord string) (*s2.LatLng, error) {
 	)
 
 	if lat, err = strconv.ParseFloat(parts[0], 64); err != nil {
-		return nil, errors.New("Latitude not parseable as float")
+		return s2.LatLng{}, errors.New("Latitude not parseable as float")
 	}
 
 	if lon, err = strconv.ParseFloat(parts[1], 64); err != nil {
-		return nil, errors.New("Longitude not parseable as float")
+		return s2.LatLng{}, errors.New("Longitude not parseable as float")
 	}
 
 	pt := s2.LatLngFromDegrees(lat, lon)
-	return &pt, nil
+	return pt, nil
 }
 
 func parseSize(size string, validate bool) (x, y int, err error) {
@@ -203,7 +201,7 @@ func parseMarkerLocations(markers []string) ([]marker, error) {
 					return nil, fmt.Errorf("Unparsable chunk found in marker: %q", p)
 				}
 				result = append(result, marker{
-					pos:   *pos,
+					pos:   pos,
 					color: col,
 					size:  size,
 				})
