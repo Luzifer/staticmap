@@ -1,3 +1,8 @@
+# 0.5.0 / 2021-02-19
+
+  * Add go modules support
+  * Remove old vendoring
+
 # 0.4.0 / 2018-06-17
 
   * Add support for overlay map generation with post request
