@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	httpHelper "github.com/Luzifer/go_helpers/http"
-	"github.com/Luzifer/rconfig"
+	httpHelper "github.com/Luzifer/go_helpers/v2/http"
+	"github.com/Luzifer/rconfig/v2"
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth/limiter"
 	"github.com/golang/geo/s2"
