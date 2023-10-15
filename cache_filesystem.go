@@ -3,10 +3,16 @@ package main
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"time"
+
+	"github.com/pkg/errors"
+)
+
+const (
+	cacheDirMode  = 0o700
+	cacheFileMode = 0o600
 )
 
 func filesystemCache(opts generateMapConfig) (io.ReadCloser, error) {
@@ -14,7 +20,8 @@ func filesystemCache(opts generateMapConfig) (io.ReadCloser, error) {
 	cacheFileName := path.Join(cfg.CacheDir, cacheKey[0:2], cacheKey+".png")
 
 	if info, err := os.Stat(cacheFileName); err == nil && info.ModTime().Add(cfg.ForceCache).After(time.Now()) {
-		return os.Open(cacheFileName)
+		f, err := os.Open(cacheFileName) //#nosec:G304 // Intended to open a variable file
+		return f, errors.Wrap(err, "opening file")
 	}
 
 	// No cache hit, generate a new map
@@ -25,16 +32,16 @@ func filesystemCache(opts generateMapConfig) (io.ReadCloser, error) {
 
 	buf := new(bytes.Buffer)
 	if _, err = io.Copy(buf, mapReader); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "writing file")
 	}
 
-	if err = os.MkdirAll(path.Dir(cacheFileName), 0700); err != nil {
-		return nil, err
+	if err = os.MkdirAll(path.Dir(cacheFileName), cacheDirMode); err != nil {
+		return nil, errors.Wrap(err, "creating cache dir")
 	}
 
-	if err = ioutil.WriteFile(cacheFileName, buf.Bytes(), 0644); err != nil {
-		return nil, err
+	if err = os.WriteFile(cacheFileName, buf.Bytes(), cacheFileMode); err != nil {
+		return nil, errors.Wrap(err, "writing cache file")
 	}
 
-	return ioutil.NopCloser(buf), err
+	return io.NopCloser(buf), err
 }

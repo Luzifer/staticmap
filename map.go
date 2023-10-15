@@ -11,8 +11,10 @@ import (
 	staticMap "github.com/Luzifer/go-staticmaps"
 	"github.com/fogleman/gg"
 	"github.com/golang/geo/s2"
+	"github.com/pkg/errors"
 )
 
+//nolint:gomnd // these are the "constant" definitions
 var markerColors = map[string]color.Color{
 	"black":  color.RGBA{R: 145, G: 145, B: 145, A: 0xff},
 	"brown":  color.RGBA{R: 178, G: 154, B: 123, A: 0xff},
@@ -28,6 +30,7 @@ var markerColors = map[string]color.Color{
 
 type markerSize float64
 
+//nolint:gomnd // these are the "constant" definitions
 var markerSizes = map[string]markerSize{
 	"tiny":  10,
 	"mid":   15,
@@ -106,10 +109,10 @@ func generateMap(opts generateMapConfig) (io.Reader, error) {
 
 	img, err := ctx.Render()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "rendering context")
 	}
 
 	pngCtx := gg.NewContextForImage(img)
 	pngBuf := new(bytes.Buffer)
-	return pngBuf, pngCtx.EncodePNG(pngBuf)
+	return pngBuf, errors.Wrap(pngCtx.EncodePNG(pngBuf), "encoding to PNG")
 }

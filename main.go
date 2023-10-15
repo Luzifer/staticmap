@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,17 +16,18 @@ import (
 	"github.com/golang/geo/s2"
 	"github.com/gorilla/mux"
 	colorful "github.com/lucasb-eyer/go-colorful"
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 var (
 	cfg struct {
-		CacheDir       string        `flag:"cache-dir" default:"cache" env:"CACHE_DIR" description:"Directory to save the cached images to"`
-		ForceCache     time.Duration `flag:"force-cache" default:"24h" env:"FORCE_CACHE" description:"Force map to be cached for this duration"`
+		CacheDir       string        `flag:"cache-dir" default:"cache" description:"Directory to save the cached images to"`
+		ForceCache     time.Duration `flag:"force-cache" default:"24h" description:"Force map to be cached for this duration"`
 		Listen         string        `flag:"listen" default:":3000" description:"IP/Port to listen on"`
-		MaxSize        string        `flag:"max-size" default:"1024x1024" env:"MAX_SIZE" description:"Maximum map size requestable"`
-		RateLimit      float64       `flag:"rate-limit" default:"1" env:"RATE_LIMIT" description:"How many requests to allow per time"`
-		RateLimitTime  time.Duration `flag:"rate-limit-time" default:"1s" env:"RATE_LIMIT_TIME" description:"Time interval to allow N requests in"`
+		MaxSize        string        `flag:"max-size" default:"1024x1024" description:"Maximum map size requestable"`
+		RateLimit      float64       `flag:"rate-limit" default:"1" description:"How many requests to allow per time"`
+		RateLimitTime  time.Duration `flag:"rate-limit-time" default:"1s" description:"Time interval to allow N requests in"`
 		VersionAndExit bool          `flag:"version" default:"false" description:"Print version information and exit"`
 	}
 
@@ -37,22 +37,30 @@ var (
 	version = "dev"
 )
 
-func init() {
-	var err error
+func initApp() (err error) {
+	rconfig.AutoEnv(true)
 	if err = rconfig.ParseAndValidate(&cfg); err != nil {
-		log.Fatalf("Unable to parse CLI parameters")
+		return errors.Wrap(err, "parsing CLI parameters")
 	}
 
-	if mapMaxX, mapMaxY, err = parseSize(cfg.MaxSize, false); err != nil {
-		log.Fatalf("Unable to parse max-size: %s", err)
+	if mapMaxX, mapMaxY, err = parseSize(cfg.MaxSize); err != nil {
+		return errors.Wrap(err, "parsing max-size")
 	}
 
-	if cfg.VersionAndExit {
-		fmt.Printf("staticmap %s\n", version)
-	}
+	return nil
 }
 
 func main() {
+	var err error
+	if err = initApp(); err != nil {
+		logrus.WithError(err).Fatal("initializing app")
+	}
+
+	if cfg.VersionAndExit {
+		fmt.Printf("staticmap %s\n", version) //nolint:forbidigo
+		return
+	}
+
 	rateLimit := tollbooth.NewLimiter(cfg.RateLimit, &limiter.ExpirableOptions{
 		DefaultExpirationTTL: cfg.RateLimitTime,
 	})
@@ -62,7 +70,17 @@ func main() {
 	r.HandleFunc("/status", func(res http.ResponseWriter, r *http.Request) { http.Error(res, "I'm fine", http.StatusOK) })
 	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handleMapRequest)).Methods("GET")
 	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handlePostMapRequest)).Methods("POST")
-	log.Fatalf("HTTP Server exitted: %s", http.ListenAndServe(cfg.Listen, httpHelper.NewHTTPLogHandler(r)))
+
+	server := &http.Server{
+		Addr:              cfg.Listen,
+		Handler:           httpHelper.NewHTTPLogHandler(r),
+		ReadHeaderTimeout: time.Second,
+	}
+
+	logrus.WithField("version", version).Info("staticmap started")
+	if err = server.ListenAndServe(); err != nil {
+		logrus.WithError(err).Fatal("running HTTP server")
+	}
 }
 
 func handleMapRequest(res http.ResponseWriter, r *http.Request) {
@@ -84,7 +102,7 @@ func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if opts.Width, opts.Height, err = parseSize(r.URL.Query().Get("size"), true); err != nil {
+	if opts.Width, opts.Height, err = parseSize(r.URL.Query().Get("size")); err != nil {
 		http.Error(res, fmt.Sprintf("Unable to parse 'size' parameter: %s", err), http.StatusBadRequest)
 		return
 	}
@@ -95,15 +113,22 @@ func handleMapRequest(res http.ResponseWriter, r *http.Request) {
 	}
 
 	if mapReader, err = cacheFunc(opts); err != nil {
-		log.Errorf("Map render failed: %s (Request: %s)", err, r.URL.String())
+		logrus.Errorf("map render failed: %s (Request: %s)", err, r.URL.String())
 		http.Error(res, fmt.Sprintf("I experienced difficulties rendering your map: %s", err), http.StatusInternalServerError)
 		return
 	}
-	defer mapReader.Close()
+	defer func() {
+		if err := mapReader.Close(); err != nil {
+			logrus.WithError(err).Error("closing map cache reader (leaked fd)")
+		}
+	}()
 
 	res.Header().Set("Content-Type", "image/png")
 	res.Header().Set("Cache-Control", "public")
-	io.Copy(res, mapReader)
+
+	if _, err = io.Copy(res, mapReader); err != nil {
+		logrus.WithError(err).Debug("writing image to HTTP client")
+	}
 }
 
 func handlePostMapRequest(res http.ResponseWriter, r *http.Request) {
@@ -124,15 +149,22 @@ func handlePostMapRequest(res http.ResponseWriter, r *http.Request) {
 	}
 
 	if mapReader, err = cacheFunc(opts); err != nil {
-		log.Errorf("Map render failed: %s (Request: %s)", err, r.URL.String())
+		logrus.Errorf("map render failed: %s (Request: %s)", err, r.URL.String())
 		http.Error(res, fmt.Sprintf("I experienced difficulties rendering your map: %s", err), http.StatusInternalServerError)
 		return
 	}
-	defer mapReader.Close()
+	defer func() {
+		if err := mapReader.Close(); err != nil {
+			logrus.WithError(err).Error("closing map cache reader (leaked fd)")
+		}
+	}()
 
 	res.Header().Set("Content-Type", "image/png")
 	res.Header().Set("Cache-Control", "public")
-	io.Copy(res, mapReader)
+
+	if _, err = io.Copy(res, mapReader); err != nil {
+		logrus.WithError(err).Debug("writing image to HTTP client")
+	}
 }
 
 func parseCoordinate(coord string) (s2.LatLng, error) {
@@ -141,7 +173,7 @@ func parseCoordinate(coord string) (s2.LatLng, error) {
 	}
 
 	parts := strings.Split(coord, ",")
-	if len(parts) != 2 {
+	if len(parts) != 2 { //nolint:gomnd
 		return s2.LatLng{}, errors.New("Coordinate not in format lat,lon")
 	}
 
@@ -162,32 +194,29 @@ func parseCoordinate(coord string) (s2.LatLng, error) {
 	return pt, nil
 }
 
-func parseSize(size string, validate bool) (x, y int, err error) {
+func parseSize(size string) (x, y int, err error) {
 	if size == "" {
 		return 0, 0, errors.New("No size given")
 	}
 
 	parts := strings.Split(size, "x")
-	if len(parts) != 2 {
+	if len(parts) != 2 { //nolint:gomnd
 		return 0, 0, errors.New("Size not in format 600x300")
 	}
 
 	if x, err = strconv.Atoi(parts[0]); err != nil {
-		return
+		return 0, 0, errors.Wrap(err, "parsing width")
 	}
 
 	if y, err = strconv.Atoi(parts[1]); err != nil {
-		return
+		return 0, 0, errors.Wrap(err, "parsing height")
 	}
 
-	if validate {
-		if x > mapMaxX || y > mapMaxY {
-			err = fmt.Errorf("Map size exceeds allowed bounds of %dx%d", mapMaxX, mapMaxY)
-			return
-		}
+	if (x > mapMaxX || y > mapMaxY) && mapMaxX > 0 && mapMaxY > 0 {
+		return 0, 0, errors.Errorf("map size exceeds allowed bounds of %dx%d", mapMaxX, mapMaxY)
 	}
 
-	return
+	return x, y, nil
 }
 
 func parseMarkerLocations(markers []string) ([]marker, error) {
@@ -209,27 +238,30 @@ func parseMarkerLocations(markers []string) ([]marker, error) {
 		for _, p := range parts {
 			switch {
 			case strings.HasPrefix(p, "size:"):
-				if s, ok := markerSizes[strings.TrimPrefix(p, "size:")]; ok {
-					size = s
-				} else {
-					return nil, fmt.Errorf("Bad marker size %q", strings.TrimPrefix(p, "size:"))
+				s, ok := markerSizes[strings.TrimPrefix(p, "size:")]
+				if !ok {
+					return nil, errors.Errorf("bad marker size %q", strings.TrimPrefix(p, "size:"))
 				}
+				size = s
+
 			case strings.HasPrefix(p, "color:0x"):
-				if c, err := colorful.Hex("#" + strings.TrimPrefix(p, "color:0x")); err == nil {
-					col = c
-				} else {
-					return nil, fmt.Errorf("Unable to parse color %q: %s", strings.TrimPrefix(p, "color:"), err)
+				c, err := colorful.Hex("#" + strings.TrimPrefix(p, "color:0x"))
+				if err != nil {
+					return nil, errors.Wrapf(err, "parsing color %q", strings.TrimPrefix(p, "color:"))
 				}
+				col = c
+
 			case strings.HasPrefix(p, "color:"):
-				if c, ok := markerColors[strings.TrimPrefix(p, "color:")]; ok {
-					col = c
-				} else {
-					return nil, fmt.Errorf("Bad color name %q", strings.TrimPrefix(p, "color:"))
+				c, ok := markerColors[strings.TrimPrefix(p, "color:")]
+				if !ok {
+					return nil, errors.Errorf("bad color name %q", strings.TrimPrefix(p, "color:"))
 				}
+				col = c
+
 			default:
 				pos, err := parseCoordinate(p)
 				if err != nil {
-					return nil, fmt.Errorf("Unparsable chunk found in marker: %q", p)
+					return nil, errors.Errorf("unparsable chunk found in marker: %q", p)
 				}
 				result = append(result, marker{
 					pos:   pos,

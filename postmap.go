@@ -7,6 +7,7 @@ import (
 
 	staticMap "github.com/Luzifer/go-staticmaps"
 	"github.com/golang/geo/s2"
+	"github.com/pkg/errors"
 )
 
 type postMapEnvelope struct {
@@ -29,7 +30,7 @@ func (p postMapEnvelope) toGenerateMapConfig() (generateMapConfig, error) {
 	}
 
 	if p.Width > mapMaxX || p.Height > mapMaxY {
-		return generateMapConfig{}, fmt.Errorf("Map size exceeds allowed bounds of %dx%d", mapMaxX, mapMaxY)
+		return generateMapConfig{}, errors.Errorf("map size exceeds allowed bounds of %dx%d", mapMaxX, mapMaxY)
 	}
 
 	var err error
@@ -94,10 +95,9 @@ type postMapOverlay []string
 func (p postMapOverlay) toOverlays() ([]*staticMap.TileProvider, error) {
 	result := []*staticMap.TileProvider{}
 	for _, pat := range p {
-
 		for _, v := range []string{`{0}`, `{1}`, `{2}`} {
 			if !strings.Contains(pat, v) {
-				return nil, fmt.Errorf("Placeholder %q not found in pattern %q", v, pat)
+				return nil, errors.Errorf("placeholder %q not found in pattern %q", v, pat)
 			}
 		}
 
@@ -105,7 +105,7 @@ func (p postMapOverlay) toOverlays() ([]*staticMap.TileProvider, error) {
 
 		result = append(result, &staticMap.TileProvider{
 			Name:       fmt.Sprintf("%x", sha256.Sum256([]byte(pat))),
-			TileSize:   256,
+			TileSize:   256, //nolint:gomnd
 			URLPattern: pat,
 		})
 	}
