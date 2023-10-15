@@ -3,7 +3,7 @@ module github.com/Luzifer/staticmap
 go 1.21
 
 require (
-	github.com/Luzifer/go-staticmaps v0.0.0-20200905142646-b98e392646d1
+	github.com/Luzifer/go-staticmaps v0.0.0-20231015113856-fd420b8ebab9
 	github.com/Luzifer/go_helpers/v2 v2.20.1
 	github.com/Luzifer/rconfig/v2 v2.4.0
 	github.com/didip/tollbooth v4.0.2+incompatible
@@ -16,7 +16,6 @@ require (
 )
 
 require (
-	github.com/Wessie/appdirs v0.0.0-20141031215813-6573e894f8e2 // indirect
 	github.com/flopp/go-coordsparser v0.0.0-20201115094714-8baaeb7062d5 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect

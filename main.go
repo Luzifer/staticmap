@@ -73,7 +73,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:              cfg.Listen,
-		Handler:           httpHelper.NewHTTPLogHandler(r),
+		Handler:           httpHelper.NewHTTPLogHandlerWithLogger(r, logrus.StandardLogger()),
 		ReadHeaderTimeout: time.Second,
 	}
 
