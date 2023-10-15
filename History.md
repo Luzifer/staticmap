@@ -1,3 +1,10 @@
+# 0.6.0 / 2023-10-15
+
+  * Fix linter errors, modernize code
+  * Update dependencies
+  * Update example images
+  * CI: Replace tooling
+
 # 0.5.0 / 2021-02-19
 
   * Add go modules support
