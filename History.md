@@ -1,3 +1,7 @@
+# 0.6.1 / 2024-04-19
+
+  * Update dependencies
+
 # 0.6.0 / 2023-10-15
 
   * Fix linter errors, modernize code
