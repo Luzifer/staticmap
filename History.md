@@ -1,3 +1,7 @@
+# 0.6.2 / 2024-10-29
+
+  * Update Go dependencies
+
 # 0.6.1 / 2024-04-19
 
   * Update dependencies
