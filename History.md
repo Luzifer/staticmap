@@ -1,3 +1,7 @@
+# 0.6.3 / 2024-10-29
+
+  * Update go-staticmaps library
+
 # 0.6.2 / 2024-10-29
 
   * Update Go dependencies
