@@ -1,5 +1,7 @@
 github.com/Luzifer/go-staticmaps v0.0.0-20231015113856-fd420b8ebab9 h1:8zlr4LR4LTXamhmIFM/L5cQV0vEEIZuAIZEVnHE7Dko=
 github.com/Luzifer/go-staticmaps v0.0.0-20231015113856-fd420b8ebab9/go.mod h1:Bd7I2SJ38U81rHSJM0z/AfQ0kl1s2ueLGreOKSlK86o=
+github.com/Luzifer/go-staticmaps v0.0.0-20241029093116-4051913e21ff h1:QjjE3DUQcSE18ov1btDEY59W6cr6g5vzXRokmR/CEXE=
+github.com/Luzifer/go-staticmaps v0.0.0-20241029093116-4051913e21ff/go.mod h1:rbV3ux/T9l7ZWi5KopLgu9FvQxrhnlRSdyDOG1x0Idw=
 github.com/Luzifer/go_helpers/v2 v2.25.0 h1:k1J4gd1+BfuokTDoWgcgib9P5mdadjzKEgbtKSVe46k=
 github.com/Luzifer/go_helpers/v2 v2.25.0/go.mod h1:KSVUdAJAav5cWGyB5oKGxmC27HrKULVTOxwPS/Kr+pc=
 github.com/Luzifer/rconfig/v2 v2.5.2 h1:4Bfp8mTrCCK/xghUmUbh/qtKiLZA6RC0tHTgqkNw1m4=
@@ -25,6 +27,8 @@ github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
 github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=
 github.com/lucasb-eyer/go-colorful v1.2.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
+github.com/mazznoer/csscolorparser v0.1.5 h1:Wr4uNIE+pHWN3TqZn2SGpA2nLRG064gB7WdSfSS5cz4=
+github.com/mazznoer/csscolorparser v0.1.5/go.mod h1:OQRVvgCyHDCAquR1YWfSwwaDcM0LhnSffGnlbOew/3I=
 github.com/patrickmn/go-cache v2.1.0+incompatible h1:HRMgzkcYKYpi3C8ajMPV8OFXaaRUnok+kx1WdO15EQc=
 github.com/patrickmn/go-cache v2.1.0+incompatible/go.mod h1:3Qf8kWWT7OJRJbdiICTKqZju1ZixQ/KpMGzzAfe6+WQ=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
