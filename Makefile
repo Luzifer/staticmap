@@ -1,6 +1,4 @@
-publish:
-	curl -sSLo golang.sh https://raw.githubusercontent.com/Luzifer/github-publish/master/golang.sh
-	bash golang.sh
+default:
 
 update_example_post:
 	curl -X POST --data-binary @example/postmap.json -o example/postmap.png localhost:5000/map.png

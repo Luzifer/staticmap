@@ -16,7 +16,7 @@ jobs:
         shell: bash
 
     container:
-      image: luzifer/archlinux
+      image: luzifer/gh-arch-env
       env:
         CGO_ENABLED: 0
         GOPATH: /go
@@ -24,32 +24,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Enable custom AUR package repo
-        run: echo -e "[luzifer]\nSigLevel = Never\nServer = https://archrepo.hub.luzifer.io/\$arch" >>/etc/pacman.conf
-
-      - name: Install required packages
-        run: |
-          pacman -Syy --noconfirm \
-            awk \
-            git \
-            go \
-            golangci-lint-bin \
-            make \
-            tar \
-            zip
-
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Marking workdir safe
         run: git config --global --add safe.directory /__w/staticmap/staticmap
 
+      - name: 'Lint and test code'
+        run: |
+          go test -cover -v ./...
+          golangci-lint run ./...
+
       - name: Build release
-        run: make publish
-        env:
-          FORCE_SKIP_UPLOAD: 'true'
-          MOD_MODE: readonly
-          NO_TESTS: 'true'
-          PACKAGES: '.'
+        run: bash ci/build.sh
 
       - name: Extract changelog
         run: 'awk "/^#/ && ++c==2{exit}; /^#/f" "History.md" | tail -n +2 >release_changelog.md'
