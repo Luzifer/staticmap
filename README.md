@@ -27,9 +27,10 @@ All map operations are made against the `/map.png` endpoint of the server and ar
     &size=800x500
     &markers=color:blue|53.54129165,9.98420576699353
     &markers=color:yellow|53.54565525,9.9680555636958
+    &markers=size:tiny|color:red|53.54846472989871,9.978977621091543
 ```
 
-The map center is set to a coordinate within Hamburg, Germany with a zoom level of 15. Additionally there are two markers set: One `blue` marker to the Elbphilharmonie, one `yellow` marker to the Hard Rock Cafe Hamburg. The example above (of course without the line breaks) produced this image:
+The map center is set to a coordinate within Hamburg, Germany with a zoom level of 15. Additionally there are two markers set: One `blue` marker to the Elbphilharmonie, one `yellow` marker to the Hard Rock Cafe Hamburg and a `tiny` `red` marker on the St. Michaels church. The example above (of course without the line breaks) produced this image:
 
 ![](example/map.png)
 
