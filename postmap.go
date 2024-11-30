@@ -105,7 +105,7 @@ func (p postMapOverlay) toOverlays() ([]*staticMap.TileProvider, error) {
 
 		result = append(result, &staticMap.TileProvider{
 			Name:       fmt.Sprintf("%x", sha256.Sum256([]byte(pat))),
-			TileSize:   256, //nolint:gomnd
+			TileSize:   256, //nolint:mnd
 			URLPattern: pat,
 		})
 	}

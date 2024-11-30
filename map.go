@@ -14,7 +14,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//nolint:gomnd // these are the "constant" definitions
+//nolint:mnd // these are the "constant" definitions
 var markerColors = map[string]color.Color{
 	"black":  color.RGBA{R: 145, G: 145, B: 145, A: 0xff},
 	"brown":  color.RGBA{R: 178, G: 154, B: 123, A: 0xff},
@@ -30,7 +30,7 @@ var markerColors = map[string]color.Color{
 
 type markerSize float64
 
-//nolint:gomnd // these are the "constant" definitions
+//nolint:mnd // these are the "constant" definitions
 var markerSizes = map[string]markerSize{
 	"tiny":  10,
 	"mid":   15,
@@ -97,7 +97,7 @@ func generateMap(opts generateMapConfig) (io.Reader, error) {
 
 	if opts.Markers != nil {
 		for _, m := range opts.Markers {
-			ctx.AddMarker(staticMap.NewMarker(m.pos, m.color, float64(m.size)))
+			ctx.AddObject(staticMap.NewMarker(m.pos, m.color, float64(m.size)))
 		}
 	}
 

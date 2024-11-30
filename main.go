@@ -67,7 +67,7 @@ func main() {
 	rateLimit.SetIPLookups([]string{"X-Forwarded-For", "RemoteAddr", "X-Real-IP"})
 
 	r := mux.NewRouter()
-	r.HandleFunc("/status", func(res http.ResponseWriter, r *http.Request) { http.Error(res, "I'm fine", http.StatusOK) })
+	r.HandleFunc("/status", func(res http.ResponseWriter, _ *http.Request) { http.Error(res, "I'm fine", http.StatusOK) })
 	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handleMapRequest)).Methods("GET")
 	r.Handle("/map.png", tollbooth.LimitFuncHandler(rateLimit, handlePostMapRequest)).Methods("POST")
 
@@ -77,7 +77,7 @@ func main() {
 		ReadHeaderTimeout: time.Second,
 	}
 
-	logrus.WithField("version", version).Info("staticmap started")
+	logrus.WithField("version", version).WithField("addr", cfg.Listen).Info("staticmap started")
 	if err = server.ListenAndServe(); err != nil {
 		logrus.WithError(err).Fatal("running HTTP server")
 	}
@@ -173,7 +173,7 @@ func parseCoordinate(coord string) (s2.LatLng, error) {
 	}
 
 	parts := strings.Split(coord, ",")
-	if len(parts) != 2 { //nolint:gomnd
+	if len(parts) != 2 { //nolint:mnd
 		return s2.LatLng{}, errors.New("Coordinate not in format lat,lon")
 	}
 
@@ -200,7 +200,7 @@ func parseSize(size string) (x, y int, err error) {
 	}
 
 	parts := strings.Split(size, "x")
-	if len(parts) != 2 { //nolint:gomnd
+	if len(parts) != 2 { //nolint:mnd
 		return 0, 0, errors.New("Size not in format 600x300")
 	}
 
