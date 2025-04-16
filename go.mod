@@ -1,6 +1,7 @@
 module github.com/Luzifer/staticmap
 
 go 1.22
+toolchain go1.24.1
 
 require (
 	github.com/Luzifer/go-staticmaps v0.0.0-20241029093116-4051913e21ff
@@ -23,9 +24,9 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tkrajina/gpxgo v1.4.0 // indirect
 	golang.org/x/image v0.21.0 // indirect
-	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.7.0 // indirect
 	gopkg.in/validator.v2 v2.0.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
