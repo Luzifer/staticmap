@@ -1,5 +1,3 @@
-github.com/Luzifer/go-staticmaps v0.0.0-20231015113856-fd420b8ebab9 h1:8zlr4LR4LTXamhmIFM/L5cQV0vEEIZuAIZEVnHE7Dko=
-github.com/Luzifer/go-staticmaps v0.0.0-20231015113856-fd420b8ebab9/go.mod h1:Bd7I2SJ38U81rHSJM0z/AfQ0kl1s2ueLGreOKSlK86o=
 github.com/Luzifer/go-staticmaps v0.0.0-20241029093116-4051913e21ff h1:QjjE3DUQcSE18ov1btDEY59W6cr6g5vzXRokmR/CEXE=
 github.com/Luzifer/go-staticmaps v0.0.0-20241029093116-4051913e21ff/go.mod h1:rbV3ux/T9l7ZWi5KopLgu9FvQxrhnlRSdyDOG1x0Idw=
 github.com/Luzifer/go_helpers/v2 v2.25.0 h1:k1J4gd1+BfuokTDoWgcgib9P5mdadjzKEgbtKSVe46k=
