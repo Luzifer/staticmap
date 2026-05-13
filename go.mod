@@ -30,3 +30,5 @@ require (
 	gopkg.in/validator.v2 v2.0.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/Luzifer/go-staticmaps => github.com/christophecollet78/go-staticmaps v0.0.0-20241029093957-2d8b63258005
